@@ -1,10 +1,13 @@
 jest.dontMock('../');
 
 describe('createStubbedContextcomponent', function() {
-  var CompareVersions, React, ReactDOM, TestUtils, TestComponent, createStubbedContextComponent;
+  var CompareVersions, React, ReactDOM, TestUtils, PropTypes, createReactClass, TestComponent, createStubbedContextComponent;
 
   function getInternalContext(component) {
-    if (CompareVersions(React.version, '0.13.3')) {
+    if (CompareVersions(React.version, '16.0.0') !== -1) {
+      // react 16
+      return component._owner.stateNode.__reactInternalMemoizedMergedChildContext;
+    } else if (CompareVersions(React.version, '0.13.3')) {
       return component._owner._renderedComponent._context
     } else {
       return component._context
@@ -15,8 +18,10 @@ describe('createStubbedContextcomponent', function() {
     CompareVersions = require.requireActual('compare-versions');
     React = require.requireActual('react');
     ReactDOM = require.requireActual('react-dom');
-    TestUtils = require.requireActual('react-addons-test-utils');
-    TestComponent = React.createClass({ render: function() { return null; }});
+    TestUtils = require.requireActual('react-dom/test-utils');
+    PropTypes = require.requireActual('prop-types');
+    createReactClass = require.requireActual('create-react-class');
+    TestComponent = createReactClass({ render: function() { return null; }});
     createStubbedContextComponent = require('../');
   })
 
@@ -47,8 +52,8 @@ describe('createStubbedContextcomponent', function() {
   });
 
   it('Merges with existing context types on component', function() {
-    TestComponent = React.createClass({
-      contextTypes: { bad: React.PropTypes.string },
+    TestComponent = createReactClass({
+      contextTypes: { bad: PropTypes.string },
       render: function() { return null }
     });
 
@@ -68,7 +73,7 @@ describe('createStubbedContextcomponent', function() {
   });
 
   it('Hooks up context on target component correctly', function() {
-    TestComponent = React.createClass({
+    TestComponent = createReactClass({
       render: function() {
         return <span>{this.context.taylor}</span>;
       }
@@ -82,7 +87,7 @@ describe('createStubbedContextcomponent', function() {
   });
 
   it('Passes through props to target component correctly', function() {
-    TestComponent = React.createClass({
+    TestComponent = createReactClass({
       render: function() {
         return <span>{this.props.red}</span>;
       }

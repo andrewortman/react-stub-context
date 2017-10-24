@@ -12,13 +12,14 @@ npm install react-stub-context
 
 ```js
 var React = require('react');
+var createReactClass = require('create-react-class');
 var Router = require('react-router');
 var Link = Router.Link;
 
-var TestHandler = React.createClass({
+var TestHandler = createReactClass({
   getInitialState: function() {
     return {
-      text: 'foo' 
+      text: 'foo'
     }
   },
 
@@ -47,7 +48,7 @@ describe('React Router Context Test', function() {
 
   beforeEach(function() {
     React = require.requireActual('react');
-    TestUtils = require.requireActual('react-addons-test-utils');
+    TestUtils = require.requireActual('react-dom/test-utils');
     stubContext = require.requireActual('react-stub-context');
     TestHandler = require('..');
     Router = function() {}
@@ -71,4 +72,3 @@ describe('React Router Context Test', function() {
   });
 });
 ```
-
